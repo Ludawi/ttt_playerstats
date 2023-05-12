@@ -1,6 +1,13 @@
 -- Initialize the role count table
 local roleCount = {}
 
+-- Function to send private chat message to player
+local function sendPrivateChatMessage(ply, message)
+  net.Start("TTTPrivateMessage")
+  net.WriteString(message)
+  net.Send(ply)
+end
+
 -- Print the round count and role count to the player's chat at the start of each round
 hook.Add("TTTBeginRound", "PrintRoundAndRoleCount", function()
   for _, ply in ipairs(player.GetAll()) do
@@ -10,11 +17,12 @@ hook.Add("TTTBeginRound", "PrintRoundAndRoleCount", function()
     local detectiveCount = tonumber(ply:GetPData("detective_count", 0))
     local traitorCount = tonumber(ply:GetPData("traitor_count", 0))
     local message = "You have played " ..
-        roundCount ..
-        " rounds on this server. Role count: Innocent - " ..
-        innocentCount .. ", Detective - " .. detectiveCount .. ", Traitor - " .. traitorCount .. "."
+    roundCount ..
+    " rounds on this server. Role count: Innocent - " ..
+    innocentCount .. ", Detective - " .. detectiveCount .. ", Traitor - " .. traitorCount .. "."
     ply:PrintMessage(HUD_PRINTTALK, message)
     ply:PrintMessage(HUD_PRINTCONSOLE, message)
+    sendPrivateChatMessage(ply, message)
   end
 end)
 
@@ -46,9 +54,11 @@ hook.Add("TTTBeginRound", "SendPrivateMessage", function()
     local detectiveCount = tonumber(ply:GetPData("detective_count", 0))
     local traitorCount = tonumber(ply:GetPData("traitor_count", 0))
     local message = "You have played " ..
-        roundCount ..
-        " rounds on this server. Role count: Innocent - " ..
-        innocentCount .. ", Detective - " .. detectiveCount .. ", Traitor - " .. traitorCount .. "."
-    ply:PrintMessage(HUD_PRINTCENTER, message)
+    roundCount ..
+    " rounds on this server. Role count: Innocent - " ..
+    innocentCount .. ", Detective - " .. detectiveCount .. ", Traitor - " .. traitorCount .. "."
+    sendPrivateChatMessage(ply, message)
   end
 end)
+
+-- Create the net message to send
