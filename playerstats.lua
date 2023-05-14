@@ -1,3 +1,7 @@
+require("net")
+require("player")
+require("hook")
+
 -- Initialize the role count table
 
 hook.Add("TTTBeginRound", "PrintMessageAtRoundStart", function()
